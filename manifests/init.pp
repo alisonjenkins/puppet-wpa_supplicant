@@ -44,7 +44,7 @@
 #
 class wpa_supplicant (
   String $wireless_adapter,
-  String $manage_networks = false,
+  Boolean $manage_networks = false,
 ){
 
   ensure_resource('service', 'wpa_supplicant', { 'ensure' => 'stopped', 'enable' => false })

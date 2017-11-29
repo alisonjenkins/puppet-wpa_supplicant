@@ -70,7 +70,7 @@ class wpa_supplicant (
       }
     }
 
-    ensure_resource('service', "wpa_supplicant-nl80211@${wireless_adapter}", { 'ensure' => 'stopped', 'enable' => true })
+    ensure_resource('service', "wpa_supplicant-nl80211@${wireless_adapter}", { 'ensure' => 'running', 'enable' => true })
 
   }
 }

@@ -45,12 +45,14 @@
 class wpa_supplicant (
   String $wireless_adapter,
   Boolean $manage_networks = false,
+  String $wpa_config_dir = '/etc/wpa_supplicant/',
 ){
 
   ensure_resource('service', 'wpa_supplicant', { 'ensure' => 'stopped', 'enable' => false })
 
   if ($wireless_adapter != '') {
-		$config_path = "/etc/wpa_supplicant/wpa_supplicant-nl80211-${wireless_adapter}.conf"
+		$config_name = "wpa_supplicant-nl80211-${wireless_adapter}.conf"
+    $config_path = "${wpa_config_dir}${config_name}"
     if ($manage_networks) {
       file { "wpa_supplicant config ${wireless_adapter}":
         owner   => 'root',
@@ -60,7 +62,7 @@ class wpa_supplicant (
         content => template('wpa_supplicant/wpa_supplicant.conf.erb')
       }
     } else {
-      if ! ($config_path in $facts['wpa_supplicant']['config_files']) {
+      if ! $config_name in $facts['wpa_supplicant']['config_files'] {
         file { "wpa_supplicant config ${wireless_adapter}":
           owner   => 'root',
           group   => 'root',

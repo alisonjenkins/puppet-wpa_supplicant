@@ -50,23 +50,24 @@ class wpa_supplicant (
   ensure_resource('service', 'wpa_supplicant', { 'ensure' => 'stopped', 'enable' => false })
 
   if ($wireless_adapter != '') {
-
+		$config_path = "/etc/wpa_supplicant/wpa_supplicant-nl80211-${wireless_adapter}.conf"
     if ($manage_networks) {
       file { "wpa_supplicant config ${wireless_adapter}":
         owner   => 'root',
         group   => 'root',
         mode    => '0600',
-        path    => "/etc/wpa_supplicant/wpa_supplicant-nl80211-${wireless_adapter}.conf",
+        path    => $config_path,
         content => template('wpa_supplicant/wpa_supplicant.conf.erb')
       }
     } else {
-      file { "wpa_supplicant config ${wireless_adapter}":
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0600',
-        path    => "/etc/wpa_supplicant/wpa_supplicant-nl80211-${wireless_adapter}.conf",
-        content => template('wpa_supplicant/wpa_supplicant.conf.erb'),
-        unless  => "/usr/bin/test -f /etc/wpa_supplicant/wpa_supplicant-nl80211-${wireless_adapter}.conf"
+      if ! ($config_path in $facts['wpa_supplicant']['config_files']) {
+        file { "wpa_supplicant config ${wireless_adapter}":
+          owner   => 'root',
+          group   => 'root',
+          mode    => '0600',
+          path    => $config_path,
+          content => template('wpa_supplicant/wpa_supplicant.conf.erb'),
+        }
       }
     }
 

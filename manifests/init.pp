@@ -43,7 +43,7 @@
 # Copyright 2017 Your name here, unless otherwise noted.
 #
 class wpa_supplicant (
-  String $wireless_adapter,
+  String $wireless_interface,
   Boolean $manage_networks = false,
   String $wpa_config_dir = '/etc/wpa_supplicant/',
 ){
@@ -51,11 +51,11 @@ class wpa_supplicant (
   ensure_resource('package', 'wpa_supplicant', { 'ensure' => 'present' })
   ensure_resource('service', 'wpa_supplicant', { 'ensure' => 'stopped', 'enable' => false })
 
-  if ($wireless_adapter != '') {
-    $config_name = "wpa_supplicant-nl80211-${wireless_adapter}.conf"
+  if ($wireless_interface != '') {
+    $config_name = "wpa_supplicant-nl80211-${wireless_interface}.conf"
     $config_path = "${wpa_config_dir}${config_name}"
     if ($manage_networks) {
-      file { "wpa_supplicant config ${wireless_adapter}":
+      file { "wpa_supplicant config ${wireless_interface}":
         owner   => 'root',
         group   => 'root',
         mode    => '0600',
@@ -65,7 +65,7 @@ class wpa_supplicant (
       }
     } else {
       if ! $config_name in $facts['wpa_supplicant']['config_files'] {
-        file { "wpa_supplicant config ${wireless_adapter}":
+        file { "wpa_supplicant config ${wireless_interface}":
           owner   => 'root',
           group   => 'root',
           mode    => '0600',
@@ -76,7 +76,7 @@ class wpa_supplicant (
       }
     }
 
-    ensure_resource('service', "wpa_supplicant-nl80211@${wireless_adapter}", { 'ensure' => 'running', 'enable' => true })
+    ensure_resource('service', "wpa_supplicant-nl80211@${wireless_interface}", { 'ensure' => 'running', 'enable' => true })
 
   }
 }

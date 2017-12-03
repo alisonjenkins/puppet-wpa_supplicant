@@ -49,7 +49,7 @@ class wpa_supplicant (
 ){
 
   ensure_resource('package', 'wpa_supplicant', { 'ensure' => 'present' })
-  ensure_resource('service', 'wpa_supplicant', { 'ensure' => 'stopped', 'enable' => false })
+  ensure_resource('service', 'wpa_supplicant', { 'ensure' => 'stopped', 'enable' => 'false' })
 
   if ($wireless_interface != '') {
     $config_name = "wpa_supplicant-nl80211-${wireless_interface}.conf"
@@ -76,7 +76,7 @@ class wpa_supplicant (
       }
     }
 
-    ensure_resource('service', "wpa_supplicant-nl80211@${wireless_interface}", { 'ensure' => 'running', 'enable' => true })
+    ensure_resource('service', "wpa_supplicant-nl80211@${wireless_interface}", { 'ensure' => 'running', 'enable' => 'true' })
 
   }
 }
